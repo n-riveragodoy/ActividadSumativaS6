@@ -1,0 +1,7 @@
+actividadsumativas6.Entrada
+actividadsumativas6.Validador
+actividadsumativas6.Pausar
+actividadsumativas6.Teatro$1
+actividadsumativas6.Cliente
+actividadsumativas6.Teatro
+actividadsumativas6.Exp2_S6_Nicolás_Rivera
