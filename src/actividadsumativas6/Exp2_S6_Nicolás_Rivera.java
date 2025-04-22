@@ -14,10 +14,10 @@ import java.util.TimerTask;
 
 class Teatro {
     
-    //Variables de clase
+    //Variables de clase o estatica
     static int totalTeatrosCreados = 0;
     
-    //Variables de instancia (no static)
+    //Variables de instancia
     String nombre;
     int totalEntradasVendidas;
     int totalIngresos;
@@ -67,13 +67,13 @@ class Teatro {
 
         MostrarTipoEntradasTarifas();
         
-        System.out.println("\nIngrese el tipo de entrada que desea");
+        System.out.println("\nEscriba el tipo de entrada que desea");
         entrada.tipoEntrada = Validador.ValidarEntradaString(scanner.next(), scanner);
         
         while ((!(entrada.tipoEntrada.equalsIgnoreCase("VIP")) && (!(entrada.tipoEntrada.equalsIgnoreCase("Platea"))) && !(entrada.tipoEntrada.equalsIgnoreCase("General")) )) {
             
             System.out.println("\nTipo de entrada no válido");
-            System.out.println("Por favor ingrese tipo de entrada: Vip, Platea o General");
+            System.out.println("Por favor escriba tipo de entrada: Vip, Platea o General");
             entrada.tipoEntrada = Validador.ValidarEntradaString(scanner.next(), scanner);
        
         }    
@@ -81,6 +81,7 @@ class Teatro {
     
     void SeleccionarAsiento(Entrada entrada, Scanner scanner) {
         
+        //Variables Locales
         int rangoInicio = 0;
         int rangoFin = 0;
 
@@ -104,25 +105,27 @@ class Teatro {
         MostrarAsientosDisponiblesPorTipoEntrada(entrada, rangoInicio, rangoFin);
         
         System.out.println("\nIngrese el número de la entrada");
-        entrada.numeroEntrada = Validador.ValidarEntradaInt(scanner.nextInt(), rangoInicio, rangoFin, scanner);
+        entrada.numeroEntrada = Validador.ValidarEntradaInt(scanner.nextInt(), rangoInicio, rangoFin, scanner); //Aquí va un Breakpoint - asegurando que se almacenará el numero de entrada ingresado
         
         while (!asientosDisponibles.contains(entrada.numeroEntrada)) {
             System.out.println("El asiento que escogio no se encuentra disponible");
             System.out.println("Ingrese el numero de un asiento disponible");
-            entrada.numeroEntrada = Validador.ValidarEntradaInt(scanner.nextInt(), rangoInicio,rangoFin, scanner);
+            entrada.numeroEntrada = Validador.ValidarEntradaInt(scanner.nextInt(), rangoInicio,rangoFin, scanner); //Aquí va un Breakpoint - asegurando que se almacenará el numero de entrada ingresado
         }
         
-        asientosDisponibles.remove(Integer.valueOf(entrada.numeroEntrada));
-        asientosOcupados.add(entrada.numeroEntrada);
+        asientosDisponibles.remove(Integer.valueOf(entrada.numeroEntrada)); //Aquí va un Breakpoint - asegurando que se removera  el numero de entrada de los asientosDisponibles
+        asientosOcupados.add(entrada.numeroEntrada); //Aquí va un Breakpoint - asegurando que se almacenará el asientoOcupado de la seleccion del asiento
         
     }
     
     
     void ReservarAsiento(Cliente cliente, Entrada entrada, Scanner scanner) {
-
+        
+        //Variables Locales
         int[] segundos = {140}; 
         boolean[] confirmado = {false};
         Timer timer = new Timer();
+        int opcion;
         
         if ( (int) segundos[0]/60 > 1) {
             System.out.println("\nLa reserva de tu entrada tiene un tiempo limite de " + (int) segundos[0]/60 + " minutos");
@@ -164,7 +167,7 @@ class Teatro {
         System.out.println("1. Confirmar");
         System.out.println("2. Cancelar");
 
-        int opcion = Validador.ValidarEntradaInt(scanner.nextInt(), 1, 2, scanner);
+        opcion = Validador.ValidarEntradaInt(scanner.nextInt(), 1, 2, scanner);
 
         switch (opcion) {
             case 1:
@@ -197,6 +200,7 @@ class Teatro {
         
         asientosVendidos.add(nuevaEntrada.numeroEntrada);
         cliente.entradasCompradas.add(nuevaEntrada);
+        cliente.asientosComprados.add(nuevaEntrada.numeroEntrada);
         listaEntradasVendidas.add(nuevaEntrada);
         totalEntradasVendidas++;
         totalIngresos += entrada.precioEntrada;
@@ -204,14 +208,15 @@ class Teatro {
     
     void MostrarBoleta(Cliente cliente) {
         
+        //Variables Locales
         Entrada copiaEntrada;
         int[] ubicaciones = new int[cliente.entradasCompradas.size()];
         int costoTotal = 0;
         
         for (int i = 0; i < cliente.entradasCompradas.size(); i++) {
-            copiaEntrada = cliente.entradasCompradas.get(i);
-            ubicaciones[i] = (copiaEntrada.numeroEntrada);
-            costoTotal += copiaEntrada.precioEntrada;
+            copiaEntrada = cliente.entradasCompradas.get(i); //Aquí va un Breakpoint - asegurando que se apunte la entrada del cliente para poder acceder a su información dentro del ciclo
+            ubicaciones[i] = (copiaEntrada.numeroEntrada); //Aquí va un Breakpoint - asegurando que se almacenará en el arreglo las ubicaciones compradas por el cliente dentro del ciclo
+            costoTotal += copiaEntrada.precioEntrada;//Aquí va un Breakpoint - asegurando que se sumara el costo total de las entradas compradas dentro del ciclo
         }
         
         cliente.MostrarCliente();
@@ -226,6 +231,7 @@ class Teatro {
 
     void MostrarAsientosDisponiblesPorTipoEntrada(Entrada entrada ,int rangoInicio, int rangoFin) {
         
+        //Variables Locales
         int contador = 0;
         int asientoDisponible;
 
@@ -251,31 +257,11 @@ class Teatro {
         System.out.println();
     }    
     
-         
-    void MostrarAsientos() {
-
-        //Variable local
-        int contador = 0;
-
-        System.out.println("\nAsientos disponibles");
-        System.out.println("-----------------");
-        for (int j = 0; j < asientosDisponibles.size(); j++) {
-
-            if (!(asientosOcupados.contains(asientosDisponibles.get(j)))) {
-                System.out.print("|" + asientosDisponibles.get(j) + "| "); 
-                contador++;
-
-                if (contador % 10 == 0 ) {
-                    System.out.println(); 
-                }
-            }
-        }
-        System.out.println();
-    }
-    
     void MostrarAsientosVendidos(ArrayList<Integer> asientosVendidos) {
 
+        //Variable Local
         ArrayList<Integer> asientosOrdenados = new ArrayList<>(asientosVendidos);
+        
         Collections.sort(asientosOrdenados);
 
         System.out.println("\nAsientos Vendidos");
@@ -335,22 +321,24 @@ class Teatro {
         
     }
     
-    Entrada BuscarEntradaVendida(Scanner scanner) {
+    Entrada BuscarEntradaVendida(Cliente cliente, Scanner scanner) {
+        
+        //Variables Locales
         int numero;
         boolean ciclo = true;
         Entrada entradaBuscada = new Entrada();
         
-        MostrarAsientosVendidos(asientosVendidos);
+        MostrarAsientosVendidos(cliente.asientosComprados);
         
         System.out.println();
         do {
             System.out.println("Ingrese el número de la entrada");
             numero = Validador.ValidarEntradaInt(scanner.nextInt(), 1, totalAsientos, scanner);
             
-            MostrarAsientosVendidos(asientosVendidos);
+            MostrarAsientosVendidos(cliente.asientosComprados);
             
-            for (int i = 0; i < listaEntradasVendidas.size(); i++) {
-                entradaBuscada = listaEntradasVendidas.get(i);
+            for (int i = 0; i < cliente.entradasCompradas.size(); i++) {
+                entradaBuscada = cliente.entradasCompradas.get(i);
                 if (numero == entradaBuscada.numeroEntrada) {
                     System.out.println("\nLa entrada fue encontrada con éxito");
                     entradaBuscada.MostrarEntrada();
@@ -366,104 +354,90 @@ class Teatro {
         } while (ciclo);
         return entradaBuscada;
     }
-    
-    
-    void EliminarEntrada(Scanner scanner) {
-
-        int indice;
-        int opcion;
-        boolean continuar;
-
-        do {
-            continuar = false;
-
-            if (listaEntradasVendidas.size() == 0) {
-                System.out.println("\nNo hay entradas registradas para eliminar.");
-                return;
-            }
-
-            System.out.println("\nIngrese el número de la entrada que desea eliminar (posición en la lista)");
-            indice = Validador.ValidarEntradaInt(scanner.nextInt(), 1, listaEntradasVendidas.size(), scanner);
-
-            Entrada entradaEliminar = listaEntradasVendidas.get(indice - 1);
-
-            System.out.println("Entrada a eliminar:");
-            entradaEliminar.MostrarEntrada(); // 
-
-            System.out.println("\n¿Está seguro que desea eliminar esta entrada?");
-            System.out.println("1.- Sí\n2.- No");
-            System.out.println("Presione el número de su elección:");
-            opcion = Validador.ValidarEntradaInt(scanner.nextInt(), 1, 2, scanner);
-
-            if (opcion == 1) {
-                totalEntradasVendidas--;
-                totalIngresos -= entradaEliminar.precioEntrada;
-                listaEntradasVendidas.remove(indice - 1);
-                System.out.println("La entrada fue eliminada con éxito\n");
-            } else {
-                System.out.println("\n1.- Eliminar otra entrada\n2.- Salir");
-                System.out.println("Presione el número de su elección:");
-                opcion = Validador.ValidarEntradaInt(scanner.nextInt(), 1, 2, scanner);
-                continuar = (opcion == 1);
-            }
-
-        } while (continuar);
-    }
 
     void ModificarEntradaExistente(Cliente cliente, Scanner scanner) {
         
+        //Variables Locales
         int opcion;
+        int asientoElegido;
         
         Entrada entradaModificada = new Entrada();
-        entradaModificada = BuscarEntradaVendida(scanner);
-               
         
         System.out.println("\nModificar:");
         System.out.println("1.- Asiento");
         System.out.println("2.- Tipo de entrada");
-        System.out.println("3.- Precio entrada\n");
-        System.out.println("Presione el número de su elección");
-        opcion = Validador.ValidarEntradaInt(scanner.nextInt(), 1, 3, scanner);
+        System.out.println("\nPresione el número de su elección");
+        opcion = Validador.ValidarEntradaInt(scanner.nextInt(), 1, 2, scanner);
+        
+        entradaModificada = BuscarEntradaVendida(cliente, scanner);
+        
+        cliente.asientosComprados.remove(Integer.valueOf(entradaModificada.numeroEntrada));
+        cliente.entradasCompradas.remove(entradaModificada);
+        asientosDisponibles.add(entradaModificada.numeroEntrada);
+        asientosOcupados.remove(Integer.valueOf(entradaModificada.numeroEntrada));
+        asientosVendidos.remove(Integer.valueOf(entradaModificada.numeroEntrada));
+        totalIngresos -= entradaModificada.precioEntrada;
+        listaEntradasVendidas.remove(entradaModificada);
         
         switch (opcion) {
             case 1:
-                System.out.println();
-                System.out.println("Seleccionar nuevo asiento:");
+                System.out.println("\nSeleccionar nuevo asiento:");
                 SeleccionarTipoEntrada(entradaModificada, scanner);
                 SeleccionarAsiento(entradaModificada, scanner);
                 entradaModificada.DefinirPrecioEntrada();
                 AplicarDescuentos(cliente, entradaModificada);
 
                 entradaModificada.MostrarEntrada();
+                
+                cliente.asientosComprados.add(entradaModificada.numeroEntrada);
+                cliente.entradasCompradas.add(entradaModificada);
+                asientosDisponibles.remove(Integer.valueOf(entradaModificada.numeroEntrada));
+                asientosOcupados.add(entradaModificada.numeroEntrada);
+                asientosVendidos.add(entradaModificada.numeroEntrada);
+                listaEntradasVendidas.add(entradaModificada);
+                totalIngresos += entradaModificada.precioEntrada;
                 break;
             case 2:
+                                System.out.println("\nSeleccionar nuevo tipo de entrada:");
+                SeleccionarTipoEntrada(entradaModificada, scanner);
+                SeleccionarAsiento(entradaModificada, scanner);
+                entradaModificada.DefinirPrecioEntrada();
+                AplicarDescuentos(cliente, entradaModificada);
+
+                entradaModificada.MostrarEntrada();
                 
+                cliente.asientosComprados.add(entradaModificada.numeroEntrada);
+                cliente.entradasCompradas.add(entradaModificada);
+                asientosDisponibles.remove(Integer.valueOf(entradaModificada.numeroEntrada));
+                asientosOcupados.add(entradaModificada.numeroEntrada);
+                asientosVendidos.add(entradaModificada.numeroEntrada);
+                listaEntradasVendidas.add(entradaModificada);
+                totalIngresos += entradaModificada.precioEntrada;
                 break;
-            case 3:
-                
-                break;
+
         }      
         
     }
-
     
 }
 
 class Cliente {
 
-    //Variables de clase (static)
+    //Variables de clase o estatica
     static int totalClientes;
 
-    //Variables de instancia (no static)
+    //Variables de instancia
     String nombre;
     int edad;
     ArrayList<Entrada> entradasCompradas;
+    ArrayList<Integer> asientosComprados;
 
     //Constructor de cliente
-    Cliente(String nombre, int edad) {
-        this.nombre = nombre;
-        this.edad = edad;  
+    Cliente() {
+        this.nombre = null;
+        this.edad = 0;  
         this.entradasCompradas = new ArrayList<>();
+        this.asientosComprados = new ArrayList<>();
         
         totalClientes++;
     }
@@ -492,10 +466,11 @@ class Cliente {
 
 class Entrada {
     
+    //Variables de clase o estatica
     static String[] tipoEntradas = {"VIP      ", "Platea   ", "General  "};
     static int[] tarifas = {30000, 20000, 10000};
     
-    //Variables de instancia (no static)
+    //Variables de instancia
     int numeroEntrada; 
     String tipoEntrada; 
     int precioEntrada; 
@@ -572,10 +547,10 @@ class Pausar {
     }
 }
 
-
 public class Exp2_S6_Nicolás_Rivera {
 
     public static void LlenarListaConNumerosAleatorios(ArrayList <Integer> lista, int cantidad, int maxLista) {
+        
         //Variables locales
         int cantidadAsientosOcupados = (int) (Math.random() * cantidad) + 1;
         int aleatorio;
@@ -598,7 +573,7 @@ public class Exp2_S6_Nicolás_Rivera {
         
         //Conttrucción de objetos
         Teatro teatro = new Teatro ("Teatro Moro");
-        Cliente cliente = new Cliente (" ", 0);
+        Cliente cliente = new Cliente ();
         Entrada entrada = new Entrada ();
 
         // Variables del usuario
@@ -616,7 +591,7 @@ public class Exp2_S6_Nicolás_Rivera {
 
         // Inicio programa
         System.out.println("Bienvenido al " + teatro.nombre);
-        System.out.println("Evento: Concierto de Shakira");
+        System.out.println("Evento: Concierto de Dua Lipa");
 
         // Pausa antes de continuar
         Pausar.Pausa(2); 
@@ -628,7 +603,7 @@ public class Exp2_S6_Nicolás_Rivera {
         Pausar.Pausa(2); 
 
         for (int i = 0; i < (teatro.totalAsientos - teatro.asientosOcupados.size()); i++) {
-            if (i > 0) {
+            if (i != 0) {
 
                 // Pausa antes de continuar
                 Pausar.Pausa(2); 
@@ -636,8 +611,6 @@ public class Exp2_S6_Nicolás_Rivera {
                 opcion = Teatro.MostrarMenu(scanner); 
 
             }  
-
-            // Salida
             if (opcion == 5) {
                 if (teatro.totalIngresos == 0) {
 
@@ -650,7 +623,6 @@ public class Exp2_S6_Nicolás_Rivera {
                     Pausar.Pausa(1); 
 
                     // Salida
-                    System.out.println();
                     System.out.println("\nResumen de compra");
                     cliente.MostrarCliente();
                     System.out.println("Total a pagar: $" + teatro.totalIngresos + " CLP");
@@ -664,54 +636,82 @@ public class Exp2_S6_Nicolás_Rivera {
 
                     break;
                 }
-
             }
 
             switch (opcion) {
                 case 1:
                     if (i == 0) {
+                        
+                        // Pausa antes de continuar
+                        Pausar.Pausa(2); 
+                        
                         cliente.RegistroCliente(scanner);
                     }
+                    
+                    // Pausa antes de continuar
+                    Pausar.Pausa(2); 
                     
                     teatro.ReservarAsiento(cliente, entrada, scanner);
 
                     break;
                 case 2:
                     if (i == 0) {
+                        
+                        // Pausa antes de continuar
+                        Pausar.Pausa(2); 
+                        
                         cliente.RegistroCliente(scanner);
-                    }
+                    }   
+                    // Pausa antes de continuar
+                    Pausar.Pausa(2); 
                     
                     teatro.MostrarPromociones();
                     
+                    // Pausa antes de continuar
+                    Pausar.Pausa(2); 
+                    
                     teatro.SeleccionarTipoEntrada(entrada, scanner);
 
+                    // Pausa antes de continuar
+                    Pausar.Pausa(2); 
+                    
                     teatro.SeleccionarAsiento(entrada, scanner);
+                    
+                    // Pausa antes de continuar
+                    Pausar.Pausa(2); 
                     
                     teatro.VenderEntrada(cliente, entrada);
                     
                     System.out.println("\nEntrada vendida con éxito.");
+                    
+                    // Pausa antes de continuar
+                     Pausar.Pausa(2);
 
                     break;
-                case 3:
+                case 3:       
+                    // Pausa antes de continuar
+                    Pausar.Pausa(2); 
+                    
                     teatro.ModificarEntradaExistente(cliente, scanner);
                     break;
                 case 4:
-                    if (cliente.entradasCompradas.size() > 0) {
-                       teatro.MostrarBoleta(cliente);
+                    if (cliente.entradasCompradas.size() > 0) {   
+                        // Pausa antes de continuar
+                        Pausar.Pausa(2);  
+                        
+                        teatro.MostrarBoleta(cliente);
+                        
+                        // Pausa antes de continuar
+                        Pausar.Pausa(2);
                     } else {
                         System.out.println("\nNo existen entradas registradas en la base de datos");
                     }
                     break;
-            }
-
+                }
             // Pausa antes de continuar
-            Pausar.Pausa(2); 
-
+            Pausar.Pausa(2);
         }   
-        
         // Cierre Scanner
-        scanner.close();         
-        
+        scanner.close();            
     }
-    
 }
