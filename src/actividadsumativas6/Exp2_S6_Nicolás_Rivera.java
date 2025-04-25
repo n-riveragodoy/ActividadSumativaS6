@@ -128,9 +128,9 @@ class Teatro {
         int opcion;
         
         if ( (int) segundos[0]/60 > 1) {
-            System.out.println("\nLa reserva de tu entrada tiene un tiempo limite de " + (int) segundos[0]/60 + " minutos");
+            System.out.println("\nLa reserva de tu entrada tiene un tiempo limite de " + (int) segundos[0]/60 + " minutos");//Aqui va un Breakpoint - asegurando que se mostrara el tiempo limite para reservar la entrada
         } else {
-            System.out.println("\nLa reserva de tu entrada tiene un tiempo limite  de " + (int) segundos[0]/60 + " minuto para realizar");
+            System.out.println("\nLa reserva de tu entrada tiene un tiempo limite  de " + (int) segundos[0]/60 + " minuto para realizar");//Aqui va un Breakpoint - asegurando que se mostrara el tiempo restante que queda para confirmar la compra
         }
         
         System.out.println("Realiza tu compra antes de que se acabe el tiempo, alguien más podria quedarse con tu entrada!");
